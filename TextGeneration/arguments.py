@@ -15,19 +15,19 @@ class GenerationTrainArguments:
         metadata={"help": "The name of the downstream data."}
     )
     downstream_corpus_name: str = field(
-        default="nsmc",
+        default="greeting",
         metadata={"help": "The name of the downstream data."}
     )
     downstream_corpus_root_dir: str = field(
-        default="/content/Korpora",
+        default="/gdrive/My Drive/umatter/TextGen",
         metadata={"help": "The root directory of the downstream data."}
     )
     downstream_model_dir: str = field(
-        default="/gdrive/My Drive/nlpbook/checkpoint-generation",
+        default="/gdrive/My Drive/umatter/TextGen",
         metadata={"help": "The output model dir."}
     )
     max_seq_length: int = field(
-        default=32,
+        default=120,
         metadata={
             "help": "The maximum total input sequence length after tokenization. Sequences longer "
                     "than this will be truncated, sequences shorter will be padded."
