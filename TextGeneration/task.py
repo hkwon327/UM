@@ -1,7 +1,7 @@
 from transformers import PreTrainedModel
 from transformers.optimization import AdamW
 from pytorch_lightning import LightningModule
-from UM.TextGeneration.arguments import GenerationTrainArguments
+from ratsnlp.nlpbook.generation.arguments import GenerationTrainArguments
 from torch.optim.lr_scheduler import ExponentialLR
 
 
