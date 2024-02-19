@@ -1,4 +1,4 @@
-import os
+mport os
 import csv
 import time
 import torch
@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 from torch.utils.data.dataset import Dataset
 from transformers import PreTrainedTokenizerFast
-from ratsnlp.nlpbook.generation.arguments import GenerationTrainArguments
+from UM.TextGeneration.arguments import GenerationTrainArguments
 
 
 logger = logging.getLogger("ratsnlp")
@@ -27,29 +27,45 @@ class GenerationFeatures:
     labels: Optional[List[int]] = None
 
 
-class NsmcCorpus:
+class CustomCorpus:
 
-    def __init__(self):
-        pass
+    def __init__(self, args):
+        self.args = args
 
-    def _read_corpus(cls, input_file, quotechar='"'):
+    # def _read_corpus(cls, input_file, quotechar='"'):
+    #     with open(input_file, "r", encoding="utf-8") as f:
+    #         return list(csv.reader(f, delimiter="\t", quotechar=quotechar))
+    
+    def _read_corpus(self, input_file, quotechar='"'):
         with open(input_file, "r", encoding="utf-8") as f:
             return list(csv.reader(f, delimiter="\t", quotechar=quotechar))
 
+
+    # def _create_examples(self, lines):
+    #     examples = []
+    #     for (i, line) in enumerate(lines):
+    #         if i == 0:
+    #             continue
+    #         _, review_sentence, sentiment = line
+    #         sentiment = "긍정" if sentiment == "1" else "부정"
+    #         text = sentiment + " " + review_sentence
+    #         examples.append(GenerationExample(text=text))
+    #     return examples
+    
     def _create_examples(self, lines):
         examples = []
         for (i, line) in enumerate(lines):
-            if i == 0:
+            if i == 0:  # Skip the header
                 continue
-            _, review_sentence, sentiment = line
-            sentiment = "긍정" if sentiment == "1" else "부정"
-            text = sentiment + " " + review_sentence
+            _, sentence, _ = line 
+            text = "새해 " + " " + sentence #hardcoding, need to be fixed
             examples.append(GenerationExample(text=text))
         return examples
 
+
     def get_examples(self, data_root_path, mode):
-        data_fpath = os.path.join(data_root_path, f"ratings_{mode}.txt")
-        logger.info(f"loading {mode} data... LOOKING AT {data_fpath}")
+        data_fpath = os.path.join(self.args.downstream_corpus_root_dir, f"{mode}.txt")
+        logger.info(f"Loading {mode} data from {data_fpath}")
         return self._create_examples(self._read_corpus(data_fpath))
 
 
