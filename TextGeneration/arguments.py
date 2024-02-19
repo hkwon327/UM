@@ -19,11 +19,11 @@ class GenerationTrainArguments:
         metadata={"help": "The name of the downstream data."}
     )
     downstream_corpus_root_dir: str = field(
-        default="/gdrive/My Drive/umatter/TextGen",
+        default="/content/UM",
         metadata={"help": "The root directory of the downstream data."}
     )
     downstream_model_dir: str = field(
-        default="/gdrive/My Drive/umatter/TextGen",
+        default="/content/UM",
         metadata={"help": "The output model dir."}
     )
     max_seq_length: int = field(
