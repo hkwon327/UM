@@ -14,22 +14,29 @@ def get_trainer(args, return_trainer_only=True):
         mode=args.monitor.split()[0],
         filename='{epoch}-{val_loss:.2f}',
     )
+    
+    # Setup trainer arguments
+    trainer_args = {
+        "max_epochs": args.epochs,
+        "fast_dev_run": args.test_mode,
+        "num_sanity_val_steps": None if args.test_mode else 0,
+        "callbacks": [checkpoint_callback],
+        "default_root_dir": ckpt_path,
+        "deterministic": torch.cuda.is_available() and args.seed is not None,
+        "precision": 16 if args.fp16 else 32,
+    }
+    
+    # Conditionally add GPU configuration
+    if torch.cuda.is_available():
+        trainer_args["gpus"] = torch.cuda.device_count()
 
-    trainer = Trainer(
-        max_epochs=args.epochs,
-        fast_dev_run=args.test_mode,
-        num_sanity_val_steps=None if args.test_mode else 0,
-        callbacks=[checkpoint_callback],
-        default_root_dir=ckpt_path,
-        deterministic=torch.cuda.is_available() and args.seed is not None,
-        accelerator="gpu" if torch.cuda.is_available() else None,
-        devices=torch.cuda.device_count() if torch.cuda.is_available() else None,
-        precision=16 if args.fp16 else 32,
-        tpu_cores=args.tpu_cores if args.tpu_cores else None,
-    )
+    # Instantiate the Trainer
+    trainer = Trainer(**trainer_args)
+    
     if return_trainer_only:
         return trainer
     else:
         return checkpoint_callback, trainer
+
 
 
